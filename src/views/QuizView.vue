@@ -210,7 +210,7 @@ onUnmounted(() => {
     <div v-else>
       <p class="question">{{ question }}</p>
       <input v-model="userAnswer" type="number" placeholder="输入你的答案" :disabled="answered" />
-      <button @click="checkAnswer" :disabled="isNaN(parseFloat(userAnswer))" :class="{ 'disabled': isNaN(parseFloat(userAnswer)) }">提交</button>
+      <button @click="checkAnswer" :disabled="isNaN(parseFloat(userAnswer)) || answered" :class="{ 'disabled': isNaN(parseFloat(userAnswer)) || answered}">提交</button>
       <p>{{ feedback }}</p>
       <button v-if="answered" @click="generateQuestion">下一题</button>
     </div>
