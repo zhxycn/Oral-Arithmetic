@@ -302,9 +302,10 @@ p.question {
 }
 
 .timer-container {
-  margin-left: 1rem;
+  width: 7rem;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .timer-container span {
