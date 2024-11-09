@@ -135,22 +135,35 @@ const switchTimeLimit = () => {
 };
 
 const downloadSummary = () => {
+  let mode;
+
+  if (selectedTimeLimit.value === timeLimit[0]){
+    mode = 'quantity';
+  }
+  if (selectedTimeLimit.value === timeLimit[1]){
+    mode = 'time';
+  }
+
   const quizSummary = {
     questions: questionsDetails.value,
     correctCount: correctCount.value,
     questionCount: questionCount.value,
+    startTime: startTime.value,
     elapsedTime: elapsedTime.value,
-    score: score.value
+    score: score.value,
+    mode: mode
   };
 
   const json = JSON.stringify(quizSummary, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+  const blob = new Blob([json], { type: 'application/json' }); // 创建 Blob
+  const url = URL.createObjectURL(blob); // 创建临时 URL
+
   const a = document.createElement('a');
   a.href = url;
   a.download = 'summary.json';
   a.click();
-  URL.revokeObjectURL(url);
+
+  URL.revokeObjectURL(url); // 销毁临时 URL
 };
 
 const handleKeyup = (event: KeyboardEvent) => {
