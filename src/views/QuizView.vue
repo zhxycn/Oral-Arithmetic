@@ -8,22 +8,22 @@ interface QuestionDetail {
   isCorrect: boolean;
 }
 
-const question = ref('');                             // 拼接后的问题
-const userAnswer = ref('');                           // 用户输入的答案
-const correctAnswer = ref<number | null>(null);       // 正确答案
-const feedback = ref('');                             // 回答正确或错误的反馈信息
-const started = ref(false);                           // [状态]是否开始
-const answered = ref(false);                          // [状态]是否提交作答
-const stopped = ref(false);                           // [状态]是否答题停止
-const startTime = ref<number | null>(null);           // 开始时的时间
-const elapsedTime = ref(0);                           // 累计用时
-const timeLimit = [15 * 60 * 1000, 3 * 60 * 1000];    // 时间限制（模式）
-const selectedTimeLimit = ref(timeLimit[0]);          // 选择的时间限制（模式）
-const questionCount = ref(0);                         // 回答的总题数
-const correctCount = ref(0);                          // 回答正确的题数
-const score = ref(0);                                 // 得分
-const questionsDetails = ref<QuestionDetail[]>([]);   // 题目存储
-let timer: number | null = null;                      // 计时器
+const question = ref('');                                // 拼接后的问题
+const userAnswer = ref('');                              // 用户输入的答案
+const correctAnswer = ref<number | null>(null);          // 正确答案
+const feedback = ref('');                                // 回答正确或错误的反馈信息
+const started = ref(false);                              // [状态]是否开始
+const answered = ref(false);                             // [状态]是否提交作答
+const stopped = ref(false);                              // [状态]是否答题停止
+const startTime = ref<number | null>(null);              // 开始时的时间
+const elapsedTime = ref(0);                              // 累计用时
+const timeLimit = [15 * 60 * 1000, 3 * 60 * 1000];       // 时间限制（模式）
+const selectedTimeLimit = ref(timeLimit[0]);             // 选择的时间限制（模式）
+const questionCount = ref(0);                            // 回答的总题数
+const correctCount = ref(0);                             // 回答正确的题数
+const score = ref(0);                                    // 得分
+const questionsDetails = ref<QuestionDetail[]>([]);      // 题目存储
+let timer: ReturnType<typeof setInterval> | null = null; // 计时器
 
 const generateQuestion = () => {
   let num1;
@@ -189,6 +189,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <h2>练习</h2>
   <div>
     <div class="switch-container">
       <span>模式:</span>
@@ -223,7 +224,7 @@ onUnmounted(() => {
     <div v-else>
       <p class="question">{{ question }}</p>
       <input v-model="userAnswer" type="number" placeholder="输入你的答案" :disabled="answered" />
-      <button @click="checkAnswer" :disabled="isNaN(parseFloat(userAnswer)) || answered" :class="{ 'disabled': isNaN(parseFloat(userAnswer)) || answered}">提交</button>
+      <button @click="checkAnswer" :disabled="isNaN(parseFloat(userAnswer)) || answered" :class="{ 'disabled': isNaN(parseFloat(userAnswer)) || answered }">提交</button>
       <p>{{ feedback }}</p>
       <button v-if="answered" @click="generateQuestion">下一题</button>
     </div>
@@ -231,6 +232,11 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
 input {
   margin-right: 1rem;
   padding: 0.5rem;

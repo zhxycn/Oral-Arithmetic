@@ -1,15 +1,54 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <h1>小登口算</h1>
+  <nav>
+    <div class="nav-links">
+      <RouterLink to="/" class="nav-link" active-class="active">主页</RouterLink>
+      <RouterLink to="/quiz" class="nav-link" active-class="active">练习</RouterLink>
+      <RouterLink to="/competition" class="nav-link" active-class="active">热座PK</RouterLink>
+    </div>
+    <div class="auth-links">
+      <RouterLink to="/login" class="nav-link" active-class="active">登录</RouterLink>
+      <RouterLink to="/register" class="nav-link" active-class="active">注册</RouterLink>
+    </div>
+  </nav>
+
+  <h1 class="hidden">小登口算</h1>
+
   <RouterView />
 </template>
 
 <style scoped>
-h1 {
-  font-size: 2rem;
+.hidden {
+  display: none;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.auth-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  font-size: 1rem;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-link.active {
+  color: hsla(160, 100%, 37%, 1);
 }
 </style>
