@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { useRouter } from 'vue-router'
 
 const email = ref('');                                   // 邮箱
 const nickname = ref('');                                // 昵称
@@ -12,6 +13,7 @@ const nicknameSelected = ref(false);                     // [状态]昵称输入
 const passwordSelected = ref(false);                     // [状态]密码输入框是否被选中过
 const confirmPasswordSelected = ref(false);              // [状态]确认密码输入框是否被选中过
 const registerStatus = ref('');                          // 注册状态
+const router = useRouter();                              // 路由
 
 const isEmailValid = computed(() => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,6 +31,8 @@ const isPasswordValid = computed(() => {
 });
 
 const register = async () => {
+  registerStatus.value = "clicked";
+
   if (!process.env.API_URL) {
     console.error('API_URL is not defined');
     alert('未找到环境变量 API_URL');
@@ -44,6 +48,9 @@ const register = async () => {
     });
     console.log(response.data);
     registerStatus.value = "success";
+    setTimeout(async () => {
+      await router.push('/login');
+    }, 3000); // 等待 3 秒后跳转到登录页
   } catch (error) {
     console.error(error);
     registerStatus.value = "failed";
@@ -66,8 +73,9 @@ const register = async () => {
       </div>
     </div><br />
     <input v-model="confirmPassword" type="password" placeholder="再次输入密码" @blur="confirmPasswordSelected = true" :class="{ 'invalid': confirmPasswordSelected && ( !confirmPassword || confirmPassword !== password ) }" required/><br />
-    <button @click="register" :disabled="!email || !nickname || !password || !confirmPassword" :class="{ 'disabled': !email || !nickname || !password || !confirmPassword }">注册</button>
-    <div v-if="registerStatus == 'success'" class="status-success">注册成功</div>
+    <button @click="register" :disabled="!email || !nickname || !password || !confirmPassword || registerStatus == 'clicked'" :class="{ 'disabled': !email || !nickname || !password || !confirmPassword }">注册</button>
+    <div v-if="registerStatus == 'clicked'" class="status-clicked">请稍后...</div>
+    <div v-if="registerStatus == 'success'" class="status-success">注册成功，3秒后跳转至登录页</div>
     <div v-if="registerStatus == 'failed'" class="status-failed">注册失败</div>
   </div>
 </template>
@@ -160,6 +168,11 @@ button:hover {
 button.disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+div.status-clicked {
+  display: inline-block;
+  margin-left: 1rem;
 }
 
 div.status-success {
