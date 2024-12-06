@@ -7,10 +7,12 @@ import CryptoJS from 'crypto-js';
 const email = ref('');                                   // 邮箱
 const password = ref('');                                // 密码
 const loginStatus = ref('');                             // 登录状态
+const errorMessage = ref('');                            // 错误信息
 const router = useRouter();                              // 路由
 
 const login = async () => {
   loginStatus.value = "clicked";
+  errorMessage.value = "";
 
   if (!process.env.API_URL) {
     console.error('API_URL is not defined');
@@ -32,6 +34,11 @@ const login = async () => {
   } catch (error) {
     console.error(error);
     loginStatus.value = "failed";
+    if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
+      errorMessage.value = error.response.data.message;
+    } else {
+      errorMessage.value = "登录失败";
+    }
   }
 };
 </script>
@@ -44,7 +51,7 @@ const login = async () => {
     <button @click="login" :disabled="!email || !password" :class="{ 'disabled': !email || !password || loginStatus == 'clicked' }">登录</button>
     <div v-if="loginStatus == 'clicked'" class="status-clicked">请稍后...</div>
     <div v-if="loginStatus == 'success'" class="status-success">登录成功，3秒后跳转至主页</div>
-    <div v-if="loginStatus == 'failed'" class="status-failed">登录失败</div>
+    <div v-if="loginStatus == 'failed'" class="status-failed">{{ errorMessage }}</div>
   </div>
 </template>
 

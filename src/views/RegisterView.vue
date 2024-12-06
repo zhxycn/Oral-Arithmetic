@@ -13,6 +13,7 @@ const nicknameSelected = ref(false);                     // [状态]昵称输入
 const passwordSelected = ref(false);                     // [状态]密码输入框是否被选中过
 const confirmPasswordSelected = ref(false);              // [状态]确认密码输入框是否被选中过
 const registerStatus = ref('');                          // 注册状态
+const errorMessage = ref('');                            // 错误信息
 const router = useRouter();                              // 路由
 
 const isEmailValid = computed(() => {
@@ -32,6 +33,7 @@ const isPasswordValid = computed(() => {
 
 const register = async () => {
   registerStatus.value = "clicked";
+  errorMessage.value = "";
 
   if (!process.env.API_URL) {
     console.error('API_URL is not defined');
@@ -54,6 +56,11 @@ const register = async () => {
   } catch (error) {
     console.error(error);
     registerStatus.value = "failed";
+    if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
+      errorMessage.value = error.response.data.message;
+    } else {
+      errorMessage.value = "注册失败";
+    }
   }
 };
 </script>
@@ -76,7 +83,7 @@ const register = async () => {
     <button @click="register" :disabled="!email || !nickname || !password || !confirmPassword || registerStatus == 'clicked'" :class="{ 'disabled': !email || !nickname || !password || !confirmPassword }">注册</button>
     <div v-if="registerStatus == 'clicked'" class="status-clicked">请稍后...</div>
     <div v-if="registerStatus == 'success'" class="status-success">注册成功，3秒后跳转至登录页</div>
-    <div v-if="registerStatus == 'failed'" class="status-failed">注册失败</div>
+    <div v-if="registerStatus == 'failed'" class="status-failed">{{ errorMessage }}</div>
   </div>
 </template>
 
