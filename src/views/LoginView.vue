@@ -25,6 +25,8 @@ const login = async () => {
     const response = await axios.post(`${process.env.API_URL}/auth?type=login`, {
       email: email.value,
       password: encryptedPassword
+    }, {
+      withCredentials: true
     });
     console.log(response.data);
     loginStatus.value = "success";

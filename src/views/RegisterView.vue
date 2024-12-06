@@ -47,6 +47,8 @@ const register = async () => {
       email: email.value,
       nickname: nickname.value,
       password: encryptedPassword
+    }, {
+      withCredentials: true
     });
     console.log(response.data);
     registerStatus.value = "success";
