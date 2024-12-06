@@ -79,8 +79,8 @@ const register = async () => {
         <p :class="{ valid: hasNumber, invalid: !hasNumber, unnecessary: !hasNumber && isPasswordValid }">包含数字</p>
       </div>
     </div><br />
-    <input v-model="confirmPassword" type="password" placeholder="再次输入密码" @blur="confirmPasswordSelected = true" :class="{ 'invalid': confirmPasswordSelected && ( !confirmPassword || confirmPassword !== password ) }" required/><br />
-    <button @click="register" :disabled="!email || !nickname || !password || !confirmPassword || registerStatus == 'clicked'" :class="{ 'disabled': !email || !nickname || !password || !confirmPassword }">注册</button>
+    <input v-model="confirmPassword" type="password" placeholder="再次输入密码" @blur="confirmPasswordSelected = true" :class="{ 'invalid': confirmPasswordSelected && ( !isPasswordValid || confirmPassword !== password ) }" required/><br />
+    <button @click="register" :disabled="!isEmailValid || !nickname || !isPasswordValid || confirmPassword != password || registerStatus in ['clicked', 'success']" :class="{ 'disabled': !isEmailValid || !nickname || !isPasswordValid || confirmPassword != password || registerStatus in ['clicked', 'success'] }">注册</button>
     <div v-if="registerStatus == 'clicked'" class="status-clicked">请稍后...</div>
     <div v-if="registerStatus == 'success'" class="status-success">注册成功，3秒后跳转至登录页</div>
     <div v-if="registerStatus == 'failed'" class="status-failed">{{ errorMessage }}</div>

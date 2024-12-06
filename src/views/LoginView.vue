@@ -48,7 +48,7 @@ const login = async () => {
     <h2>登录</h2>
     <input v-model="email" type="text" placeholder="邮箱" required/><br />
     <input v-model="password" type="password" placeholder="密码" required/><br />
-    <button @click="login" :disabled="!email || !password" :class="{ 'disabled': !email || !password || loginStatus == 'clicked' }">登录</button>
+    <button @click="login" :disabled="!email || !password || loginStatus in ['clicked', 'success']" :class="{ 'disabled': !email || !password || loginStatus in ['clicked', 'success'] }">登录</button>
     <div v-if="loginStatus == 'clicked'" class="status-clicked">请稍后...</div>
     <div v-if="loginStatus == 'success'" class="status-success">登录成功，3秒后跳转至主页</div>
     <div v-if="loginStatus == 'failed'" class="status-failed">{{ errorMessage }}</div>
