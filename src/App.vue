@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+
+const nickname = localStorage.getItem('nickname') || ''
 </script>
 
 <template>
@@ -10,8 +12,9 @@ import { RouterLink, RouterView } from 'vue-router'
       <RouterLink to="/competition" class="nav-link" active-class="active">热座PK</RouterLink>
     </div>
     <div class="auth-links">
-      <RouterLink to="/login" class="nav-link" active-class="active">登录</RouterLink>
-      <RouterLink to="/register" class="nav-link" active-class="active">注册</RouterLink>
+      <RouterLink to="/login" class="nav-link" active-class="active" v-if="!nickname">登录</RouterLink>
+      <RouterLink to="/register" class="nav-link" active-class="active" v-if="!nickname">注册</RouterLink>
+      <RouterLink to="/user" class="nav-link" active-class="active" v-if="nickname">{{ nickname }}</RouterLink>
     </div>
   </nav>
 

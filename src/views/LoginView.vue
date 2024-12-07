@@ -6,6 +6,7 @@ import CryptoJS from 'crypto-js';
 
 const email = ref('');                                   // 邮箱
 const password = ref('');                                // 密码
+const nickname = ref<string | null>(null);               // 昵称
 const loginStatus = ref('');                             // 登录状态
 const errorMessage = ref('');                            // 错误信息
 const router = useRouter();                              // 路由
@@ -30,6 +31,8 @@ const login = async () => {
     });
     console.log(response.data);
     loginStatus.value = "success";
+    nickname.value = response.data.nickname;
+    localStorage.setItem('nickname', response.data.nickname); // 保存 nickname 值
     setTimeout(async () => {
       await router.push('/');
     }, 3000); // 等待 3 秒后跳转到主页
@@ -52,7 +55,7 @@ const login = async () => {
     <input v-model="password" type="password" placeholder="密码" required/><br />
     <button @click="login" :disabled="!email || !password || loginStatus in ['clicked', 'success']" :class="{ 'disabled': !email || !password || loginStatus in ['clicked', 'success'] }">登录</button>
     <div v-if="loginStatus == 'clicked'" class="status-clicked">请稍后...</div>
-    <div v-if="loginStatus == 'success'" class="status-success">登录成功，3秒后跳转至主页</div>
+    <div v-if="loginStatus == 'success'" class="status-success">欢迎，{{ nickname }}，3秒后跳转至主页</div>
     <div v-if="loginStatus == 'failed'" class="status-failed">{{ errorMessage }}</div>
   </div>
 </template>

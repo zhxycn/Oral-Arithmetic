@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue')
     },
     {
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/UserView.vue')
+    },
+    {
       path: '/quiz',
       name: 'quiz',
       component: () => import('../views/QuizView.vue')
