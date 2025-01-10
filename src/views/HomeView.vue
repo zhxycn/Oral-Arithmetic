@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  const nickname = localStorage.getItem('nickname') || ''
+const session = getCookie('session') || '';
+const nickname = session ? localStorage.getItem('nickname') : '';
 </script>
 
 <template>

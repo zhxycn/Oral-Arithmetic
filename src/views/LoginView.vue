@@ -33,6 +33,7 @@ const login = async () => {
     loginStatus.value = "success";
     nickname.value = response.data.nickname;
     localStorage.setItem('nickname', response.data.nickname); // 保存 nickname 值
+    document.cookie = `session=${response.data.session}; Path=/; Max-Age=${response.data.expiration}; Secure; SameSite=None`; // 设置 cookie
     setTimeout(async () => {
       await router.push('/');
     }, 3000); // 等待 3 秒后跳转到主页

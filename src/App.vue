@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 
-const nickname = localStorage.getItem('nickname') || ''
+const session = getCookie('session') || '';
+const nickname = session ? localStorage.getItem('nickname') : '';
 </script>
 
 <template>
