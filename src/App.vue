@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 
+import { getCookie } from '@/utils/cookie';
+
 const session = getCookie('session') || '';
 const nickname = session ? localStorage.getItem('nickname') : '';
 </script>
@@ -13,9 +15,9 @@ const nickname = session ? localStorage.getItem('nickname') : '';
       <RouterLink to="/competition" class="nav-link" active-class="active">热座PK</RouterLink>
     </div>
     <div class="auth-links">
-      <RouterLink to="/login" class="nav-link" active-class="active" v-if="!nickname">登录</RouterLink>
-      <RouterLink to="/register" class="nav-link" active-class="active" v-if="!nickname">注册</RouterLink>
-      <RouterLink to="/user" class="nav-link" active-class="active" v-if="nickname">{{ nickname }}</RouterLink>
+      <RouterLink to="/login" class="nav-link" active-class="active" v-if="!session">登录</RouterLink>
+      <RouterLink to="/register" class="nav-link" active-class="active" v-if="!session">注册</RouterLink>
+      <RouterLink to="/user" class="nav-link" active-class="active" v-if="session">{{ nickname }}</RouterLink>
     </div>
   </nav>
 

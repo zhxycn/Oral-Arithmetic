@@ -2,6 +2,8 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 
+import { getCookie } from '@/utils/cookie';
+
 interface QuestionDetail {
   question: string;
   userAnswer: string;
@@ -135,13 +137,6 @@ const checkAnswer = () => {
 
 const switchTimeLimit = () => {
   selectedTimeLimit.value = selectedTimeLimit.value === timeLimit[0] ? timeLimit[1] : timeLimit[0];
-};
-
-const getCookie = (name: string): string | null => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-  return null;
 };
 
 const getQuizSummary = () => {
