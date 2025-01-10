@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios';
 
 interface QuestionDetail {
   question: string;
@@ -23,6 +24,7 @@ const questionCount = ref(0);                            // 回答的总题数
 const correctCount = ref(0);                             // 回答正确的题数
 const score = ref(0);                                    // 得分
 const questionsDetails = ref<QuestionDetail[]>([]);      // 题目存储
+const errorMessage = ref('');                            // 错误信息
 let timer: ReturnType<typeof setInterval> | null = null; // 计时器
 
 const generateQuestion = () => {
@@ -103,6 +105,7 @@ const stopQuiz = () => {
   if (isNaN(score.value)) { // 一道题都不做怎么能行呀
     score.value = 0;
   }
+  uploadSummary()
 };
 
 const checkAnswer = () => {
@@ -134,17 +137,17 @@ const switchTimeLimit = () => {
   selectedTimeLimit.value = selectedTimeLimit.value === timeLimit[0] ? timeLimit[1] : timeLimit[0];
 };
 
-const downloadSummary = () => {
-  let mode;
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
 
-  if (selectedTimeLimit.value === timeLimit[0]){
-    mode = 'quantity';
-  }
-  if (selectedTimeLimit.value === timeLimit[1]){
-    mode = 'time';
-  }
+const getQuizSummary = () => {
+  const mode = selectedTimeLimit.value === timeLimit[0] ? 'quantity' : 'time';
 
-  const quizSummary = {
+  return {
     questions: questionsDetails.value,
     correctCount: correctCount.value,
     questionCount: questionCount.value,
@@ -153,17 +156,51 @@ const downloadSummary = () => {
     score: score.value,
     mode: mode
   };
+};
 
+const downloadSummary = () => {
+  const quizSummary = getQuizSummary();
   const json = JSON.stringify(quizSummary, null, 2);
-  const blob = new Blob([json], { type: 'application/json' }); // 创建 Blob
-  const url = URL.createObjectURL(blob); // 创建临时 URL
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
   a.download = 'summary.json';
   a.click();
 
-  URL.revokeObjectURL(url); // 销毁临时 URL
+  URL.revokeObjectURL(url);
+};
+
+const uploadSummary = async () => {
+  const session = getCookie('session') || '';
+
+  if (!session) {
+    console.info('Not logged in');
+    return;
+  }
+
+  if (!process.env.API_URL) {
+    console.error('API_URL is not defined');
+    alert('未找到环境变量 API_URL');
+    return;
+  }
+
+  const quizSummary = getQuizSummary();
+
+  try {
+    const response = await axios.post(`${process.env.API_URL}/quiz?type=save_quiz`, quizSummary, {
+      withCredentials: true,
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+    if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
+      errorMessage.value = error.response.data.message;
+    } else {
+      errorMessage.value = "上传失败";
+    }
+  }
 };
 
 const handleKeyup = (event: KeyboardEvent) => {
