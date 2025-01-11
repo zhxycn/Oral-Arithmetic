@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 
-import { postData, fetchData } from '@/utils/fetch';
+import { postData, fetchData } from '@/utils/request';
 
 interface QuestionDetail {
   question: string;

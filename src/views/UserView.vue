@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 
 import { getCookie } from '@/utils/cookie';
-import { fetchData } from '@/utils/fetch'
+import { fetchData } from '@/utils/request'
 
 const session = getCookie('session') || '';
 const uid = ref('');                                     // 用户 ID
