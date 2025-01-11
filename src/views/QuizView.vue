@@ -40,7 +40,7 @@ const generateQuestion = () => {
     const mistakeQuestion = mistake.value.pop();
     if (mistakeQuestion) {
       question.value = mistakeQuestion.question;
-      correctAnswer.value = mistakeQuestion.correctAnswer;
+      correctAnswer.value = Number(mistakeQuestion.correctAnswer);
       userAnswer.value = '';
       feedback.value = '';
       answered.value = false;
