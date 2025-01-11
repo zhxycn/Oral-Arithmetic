@@ -32,6 +32,7 @@ const correctCount = ref(0);                             // 回答正确的题�
 const score = ref(0);                                    // 得分
 const questionsDetails = ref<QuestionDetail[]>([]);      // 题目存储
 const mistake = ref<MistakeDetail[]>([]);                // 错题
+const isMistake = ref(false);                            // [状态]是否为错题
 const errorMessage = ref('');                            // 错误信息
 let timer: ReturnType<typeof setInterval> | null = null; // 计时器
 
@@ -39,6 +40,7 @@ const generateQuestion = () => {
   if (mistake.value.length > 0) {
     const mistakeQuestion = mistake.value.pop();
     if (mistakeQuestion) {
+      isMistake.value = true;
       question.value = mistakeQuestion.question;
       correctAnswer.value = Number(mistakeQuestion.correctAnswer);
       userAnswer.value = '';
@@ -86,6 +88,7 @@ const generateQuestion = () => {
   }
 
   question.value = `${num1} ${operation} ${num2}`; // 拼接问题
+  isMistake.value = false;
   userAnswer.value = '';
   feedback.value = '';
   answered.value = false;
@@ -145,12 +148,14 @@ const checkAnswer = () => {
     correctCount.value++;
   } else {
     feedback.value = `再想想呢...正确答案是 ${correctAnswer.value} 哦`;
-    uploadMistake({
-      question: question.value,
-      userAnswer: userAnswer.value,
-      correctAnswer: correctAnswer.value,
-      isCorrect: false
-    });
+    if (!isMistake.value) {
+      uploadMistake({
+        question: question.value,
+        userAnswer: userAnswer.value,
+        correctAnswer: correctAnswer.value,
+        isCorrect: false
+      });
+    }
   }
   answered.value = true;
   questionCount.value++;
