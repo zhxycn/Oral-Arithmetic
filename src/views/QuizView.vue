@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 
-import { uploadData } from '@/utils/upload';
+import { uploadData, getData } from '@/utils/fetch';
 
 interface QuestionDetail {
   question: string;
   userAnswer: string;
   correctAnswer: number | null;
   isCorrect: boolean;
+}
+
+interface MistakeDetail {
+  question: string;
+  userAnswer: string;
+  correctAnswer: number | null;
 }
 
 const question = ref('');                                // 拼接后的问题
@@ -25,10 +31,23 @@ const questionCount = ref(0);                            // 回答的总题数
 const correctCount = ref(0);                             // 回答正确的题数
 const score = ref(0);                                    // 得分
 const questionsDetails = ref<QuestionDetail[]>([]);      // 题目存储
+const mistake = ref<MistakeDetail[]>([]);                // 错题
 const errorMessage = ref('');                            // 错误信息
 let timer: ReturnType<typeof setInterval> | null = null; // 计时器
 
 const generateQuestion = () => {
+  if (mistake.value.length > 0) {
+    const mistakeQuestion = mistake.value.pop();
+    if (mistakeQuestion) {
+      question.value = mistakeQuestion.question;
+      correctAnswer.value = mistakeQuestion.correctAnswer;
+      userAnswer.value = '';
+      feedback.value = '';
+      answered.value = false;
+      return;
+    }
+  }
+
   let num1;
   let num2;
   const operations = ['+', '-', '*', '/'];
@@ -72,7 +91,7 @@ const generateQuestion = () => {
   answered.value = false;
 };
 
-const startQuiz = () => {
+const startQuiz = async () => {
   started.value = true;
   stopped.value = false;
   startTime.value = Date.now();
@@ -80,6 +99,17 @@ const startQuiz = () => {
   questionCount.value = 0;
   correctCount.value = 0;
   questionsDetails.value = [];
+  mistake.value = [];
+
+  try {
+    const data = await getData('/quiz?type=get_mistakes', errorMessage);
+    if (data) {
+      mistake.value = data;
+    }
+  } catch (error) {
+    console.error('Failed to fetch:', error);
+  }
+
   generateQuestion();
   timer = setInterval(() => {
     if (startTime.value !== null) {

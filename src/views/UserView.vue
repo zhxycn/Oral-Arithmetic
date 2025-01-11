@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+
 import { getCookie } from '@/utils/cookie';
+import { getData } from '@/utils/fetch'
 
 const session = getCookie('session') || '';
-const uid = ref('');                                      // 用户 ID
-const email = ref('');                                    // 邮箱
-const nickname = ref<string | null>(null);                // 昵称
-const avatar = ref('');                                   // 头像
-const total = ref(0);                                     // 总场次
-const competition_total = ref(0);                         // PK 总场次
-const competition_win = ref(0);                           // PK 胜场次
-const qid = ref<[]>([]);                                  // 测试 ID
-const mistake = ref<[]>([]);                              // 错题
+const uid = ref('');                                     // 用户 ID
+const email = ref('');                                   // 邮箱
+const nickname = ref<string | null>(null);               // 昵称
+const avatar = ref('');                                  // 头像
+const total = ref(0);                                    // 总场次
+const competition_total = ref(0);                        // PK 总场次
+const competition_win = ref(0);                          // PK 胜场次
+const qid = ref<[]>([]);                                 // 测试 ID
+const mistake = ref<[]>([]);                             // 错题
+const errorMessage = ref('');                            // 错误信息
 
 const fetchUserData = async () => {
   if (!process.env.API_URL) {
     console.error('API_URL is not defined');
-    alert('API_URL environment variable not found');
+    alert('未找到环境变量 API_URL');
     return;
   }
 
   try {
-    const response = await axios.get(`${process.env.API_URL}/user?type=get`, {
-      withCredentials: true
-    });
-    const userdata = response.data;
+    const userdata = await getData(`${process.env.API_URL}/user?type=get`, errorMessage);
     uid.value = userdata["uid"];
     email.value = userdata["email"];
     nickname.value = userdata["nickname"];
@@ -47,7 +46,7 @@ const fetchUserData = async () => {
     localStorage.setItem('qid', JSON.stringify(userdata["qid"]));
     localStorage.setItem('mistake', JSON.stringify(userdata["mistake"]));
   } catch (error) {
-    console.error(error);
+    console.error('Failed to fetch:', error);
   }
 };
 
