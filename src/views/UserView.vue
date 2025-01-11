@@ -11,7 +11,7 @@ const avatar = ref('');                                   // 头像
 const total = ref(0);                                     // 总场次
 const competition_total = ref(0);                         // PK 总场次
 const competition_win = ref(0);                           // PK 胜场次
-const qid = ref<number[]>([]);                            // 测试 ID
+const qid = ref<[]>([]);                                  // 测试 ID
 const mistake = ref<[]>([]);                              // 错题
 
 const fetchUserData = async () => {

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import axios from 'axios';
 
-import { getCookie } from '@/utils/cookie';
+import { uploadData } from '@/utils/upload';
 
 interface QuestionDetail {
   question: string;
@@ -116,6 +115,12 @@ const checkAnswer = () => {
     correctCount.value++;
   } else {
     feedback.value = `再想想呢...正确答案是 ${correctAnswer.value} 哦`;
+    uploadMistake({
+      question: question.value,
+      userAnswer: userAnswer.value,
+      correctAnswer: correctAnswer.value,
+      isCorrect: false
+    });
   }
   answered.value = true;
   questionCount.value++;
@@ -167,35 +172,13 @@ const downloadSummary = () => {
   URL.revokeObjectURL(url);
 };
 
+const uploadMistake = async (questionDetail: QuestionDetail) => {
+  await uploadData('/quiz?type=save_mistake', questionDetail, errorMessage);
+};
+
 const uploadSummary = async () => {
-  const session = getCookie('session') || '';
-
-  if (!session) {
-    console.info('Not logged in');
-    return;
-  }
-
-  if (!process.env.API_URL) {
-    console.error('API_URL is not defined');
-    alert('未找到环境变量 API_URL');
-    return;
-  }
-
   const quizSummary = getQuizSummary();
-
-  try {
-    const response = await axios.post(`${process.env.API_URL}/quiz?type=save_quiz`, quizSummary, {
-      withCredentials: true,
-    });
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-    if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
-      errorMessage.value = error.response.data.message;
-    } else {
-      errorMessage.value = "上传失败";
-    }
-  }
+  await uploadData('/quiz?type=save_quiz', quizSummary, errorMessage);
 };
 
 const handleKeyup = (event: KeyboardEvent) => {
