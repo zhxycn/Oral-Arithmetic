@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 
 import { getCookie } from '@/utils/cookie';
-import { getData } from '@/utils/fetch'
+import { fetchData } from '@/utils/fetch'
 
 const session = getCookie('session') || '';
 const uid = ref('');                                     // 用户 ID
@@ -24,7 +24,7 @@ const fetchUserData = async () => {
   }
 
   try {
-    const userdata = await getData(`${process.env.API_URL}/user?type=get`, errorMessage);
+    const userdata = await fetchData(`${process.env.API_URL}/user?type=get`, errorMessage);
     uid.value = userdata["uid"];
     email.value = userdata["email"];
     nickname.value = userdata["nickname"];

@@ -1,60 +1,24 @@
 import axios from 'axios';
 import { getCookie } from '@/utils/cookie';
 
-export const uploadData = async (url: string, data: unknown, errorMessage: { value: string }) => {
+const sendRequest = async (method: 'get' | 'post', url: string, data: unknown, errorMessage: { value: string }) => {
   const session = getCookie('session') || '';
-
-  if (!session) {
-    console.info('Not logged in');
-    return;
-  }
-
-  if (!process.env.API_URL) {
-    console.error('API_URL is not defined');
-    alert('未找到环境变量 API_URL');
-    return;
-  }
+  if (!session) return console.info('Not logged in');
+  if (!process.env.API_URL) return alert('未找到环境变量 API_URL');
 
   try {
-    const response = await axios.post(`${process.env.API_URL}${url}`, data, {
-      withCredentials: true,
-    });
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-    if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
-      errorMessage.value = error.response.data.message;
-    } else {
-      errorMessage.value = "上传失败";
-    }
-  }
-};
-
-export const getData = async (url: string, errorMessage: { value: string }) => {
-  const session = getCookie('session') || '';
-
-  if (!session) {
-    console.info('Not logged in');
-    return;
-  }
-
-  if (!process.env.API_URL) {
-    console.error('API_URL is not defined');
-    alert('未找到环境变量 API_URL');
-    return;
-  }
-
-  try {
-    const response = await axios.get(`${process.env.API_URL}${url}`, {
-      withCredentials: true,
-    });
+    const response = await axios({ method, url: `${process.env.API_URL}${url}`, data, withCredentials: true });
     return response.data;
   } catch (error) {
     console.error(error);
-    if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
-      errorMessage.value = error.response.data.message;
-    } else {
-      errorMessage.value = "获取失败";
-    }
+    errorMessage.value = axios.isAxiosError(error) && error.response?.data?.message || "请求失败";
   }
+};
+
+export const postData = async (url: string, data: unknown, errorMessage: { value: string }) => {
+  await sendRequest('post', url, data, errorMessage);
+};
+
+export const fetchData = async (url: string, errorMessage: { value: string }) => {
+  return await sendRequest('get', url, null, errorMessage);
 };

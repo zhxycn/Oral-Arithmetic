@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 
-import { uploadData, getData } from '@/utils/fetch';
+import { postData, fetchData } from '@/utils/fetch';
 
 interface QuestionDetail {
   question: string;
@@ -105,7 +105,7 @@ const startQuiz = async () => {
   mistake.value = [];
 
   try {
-    const data = await getData('/quiz?type=get_mistakes', errorMessage);
+    const data = await fetchData('/quiz?type=get_mistakes', errorMessage);
     if (data) {
       mistake.value = data;
     }
@@ -146,6 +146,14 @@ const checkAnswer = () => {
   if (parseFloat(userAnswer.value) === correctAnswer.value) {
     feedback.value = '做对啦!';
     correctCount.value++;
+    if (isMistake.value) {
+      removeMistake({
+        question: question.value,
+        userAnswer: userAnswer.value,
+        correctAnswer: correctAnswer.value,
+        isCorrect: true
+      });
+    }
   } else {
     feedback.value = `再想想呢...正确答案是 ${correctAnswer.value} 哦`;
     if (!isMistake.value) {
@@ -208,12 +216,16 @@ const downloadSummary = () => {
 };
 
 const uploadMistake = async (questionDetail: QuestionDetail) => {
-  await uploadData('/quiz?type=save_mistake', questionDetail, errorMessage);
+  await postData('/quiz?type=save_mistake', questionDetail, errorMessage);
+};
+
+const removeMistake = async (questionDetail: QuestionDetail) => {
+  await postData('/quiz?type=remove_mistake', questionDetail, errorMessage);
 };
 
 const uploadSummary = async () => {
   const quizSummary = getQuizSummary();
-  await uploadData('/quiz?type=save_quiz', quizSummary, errorMessage);
+  await postData('/quiz?type=save_quiz', quizSummary, errorMessage);
 };
 
 const handleKeyup = (event: KeyboardEvent) => {
