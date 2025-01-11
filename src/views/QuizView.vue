@@ -284,7 +284,7 @@ onUnmounted(() => {
     <button v-if="stopped" @click="downloadSummary">下载数据</button>
     <button v-if="!started" @click="startQuiz">开始</button>
     <div v-else>
-      <p class="question">{{ question }}</p>
+      <p class="question">{{ question }}<span v-if="isMistake" class="mistake-label">本题来自错题本</span></p>
       <input v-model="userAnswer" type="number" placeholder="输入你的答案" :disabled="answered" />
       <button @click="checkAnswer" :disabled="isNaN(parseFloat(userAnswer)) || answered" :class="{ 'disabled': isNaN(parseFloat(userAnswer)) || answered }">提交</button>
       <p>{{ feedback }}</p>
@@ -343,6 +343,12 @@ p {
 p.question {
   margin-top: 1rem;
   font-size: 1.8rem;
+}
+
+.mistake-label {
+  margin-left: 2rem;
+  font-size: 0.9rem;
+  color: hsl(0, 100%, 79%);
 }
 
 .info-container {
