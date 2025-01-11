@@ -35,6 +35,17 @@ const fetchUserData = async () => {
     competition_win.value = userdata["competition_win"];
     qid.value = userdata["qid"];
     mistake.value = userdata["mistake"];
+
+    // 存入浏览器存储
+    localStorage.setItem('uid', userdata["uid"]);
+    localStorage.setItem('email', userdata["email"]);
+    localStorage.setItem('nickname', userdata["nickname"]);
+    localStorage.setItem('avatar', userdata["avatar"]);
+    localStorage.setItem('total', userdata["total"].toString());
+    localStorage.setItem('competition_total', userdata["competition_total"].toString());
+    localStorage.setItem('competition_win', userdata["competition_win"].toString());
+    localStorage.setItem('qid', JSON.stringify(userdata["qid"]));
+    localStorage.setItem('mistake', JSON.stringify(userdata["mistake"]));
   } catch (error) {
     console.error(error);
   }
@@ -42,6 +53,18 @@ const fetchUserData = async () => {
 
 onMounted(() => {
   if (session) {
+    // 从浏览器存储中加载数据
+    uid.value = localStorage.getItem('uid') || '';
+    email.value = localStorage.getItem('email') || '';
+    nickname.value = localStorage.getItem('nickname');
+    avatar.value = localStorage.getItem('avatar') || '';
+    total.value = parseInt(localStorage.getItem('total') || '0');
+    competition_total.value = parseInt(localStorage.getItem('competition_total') || '0');
+    competition_win.value = parseInt(localStorage.getItem('competition_win') || '0');
+    qid.value = JSON.parse(localStorage.getItem('qid') || '[]');
+    mistake.value = JSON.parse(localStorage.getItem('mistake') || '[]');
+
+    // 从服务器加载并刷新本地数据
     fetchUserData();
   }
 });

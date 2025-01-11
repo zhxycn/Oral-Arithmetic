@@ -12,5 +12,8 @@ const nickname = session ? localStorage.getItem('nickname') : '';
 </template>
 
 <style scoped>
-
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
 </style>
