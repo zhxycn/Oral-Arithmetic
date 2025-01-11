@@ -4,6 +4,12 @@ import { ref, onMounted } from 'vue';
 import { getCookie } from '@/utils/cookie';
 import { fetchData } from '@/utils/request'
 
+interface MistakeDetail {
+  question: string;
+  userAnswer: string;
+  correctAnswer: number | null;
+}
+
 const session = getCookie('session') || '';
 const uid = ref('');                                     // 用户 ID
 const email = ref('');                                   // 邮箱
@@ -13,7 +19,7 @@ const total = ref(0);                                    // 总场次
 const competition_total = ref(0);                        // PK 总场次
 const competition_win = ref(0);                          // PK 胜场次
 const qid = ref<[]>([]);                                 // 测试 ID
-const mistake = ref<[]>([]);                             // 错题
+const mistake = ref<MistakeDetail[]>([]);                // 错题
 const errorMessage = ref('');                            // 错误信息
 
 const fetchUserData = async () => {
