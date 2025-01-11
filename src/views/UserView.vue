@@ -123,4 +123,26 @@ onMounted(() => {
 .profile-info strong {
   color: #333;
 }
+
+@media (max-width: 600px) {
+  .profile-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1rem auto;
+  }
+
+  .profile-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .profile-table td {
+    font-size: 1rem;
+  }
+}
 </style>
