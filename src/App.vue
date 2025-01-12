@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { ref } from 'vue';
 import { getCookie } from '@/utils/cookie';
 
-const session = getCookie('session') || '';
+const session = getCookie('session') || '1';
 const nickname = session ? localStorage.getItem('nickname') : '';
 const showDropdown = ref(false);
 </script>
@@ -70,7 +70,7 @@ nav {
 
 .dropdown-menu {
   position: absolute;
-  top: 130%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
   background-color: white;
