@@ -101,7 +101,11 @@ onMounted(() => {
 
 .mistake-table th {
   background-color: #f2f2f2;
-  text-align: center; /* Center the table headers */
+  text-align: center;
+}
+
+.mistake-table td {
+  text-align: center;
 }
 
 .mistake-table tr:nth-child(even) {
