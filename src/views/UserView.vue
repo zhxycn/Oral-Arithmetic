@@ -30,7 +30,7 @@ const fetchUserData = async () => {
   }
 
   try {
-    const userdata = await fetchData(`${process.env.API_URL}/user?type=get`, errorMessage);
+    const userdata = await fetchData('/user?type=get', errorMessage);
     uid.value = userdata["uid"];
     email.value = userdata["email"];
     nickname.value = userdata["nickname"];
