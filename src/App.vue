@@ -49,7 +49,7 @@ nav {
 
 .nav-link {
   font-size: 1rem;
-  color: black;
+  color: var(--color-text);
   text-decoration: none;
   cursor: pointer;
 }
